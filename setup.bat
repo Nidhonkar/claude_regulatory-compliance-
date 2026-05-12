@@ -6,6 +6,7 @@ color 0A
 echo ============================================================
 echo   Regulatory Compliance AI Agent - Windows Setup
 echo   UAE and KSA - Real Estate and BFSI Sectors
+echo   Powered by Google Gemini (FREE)
 echo ============================================================
 echo.
 
@@ -57,25 +58,30 @@ IF NOT EXIST .env (
 echo.
 
 REM Prompt for API key
-echo [4/4] API Key Configuration
+echo [4/4] Gemini API Key Configuration
 echo.
-echo You need an Anthropic API key to run the agent.
-echo Get yours at: https://console.anthropic.com
+echo This agent uses Google Gemini - 100%% FREE, no credit card needed.
+echo.
+echo To get your free Gemini API key:
+echo   1. Go to: https://aistudio.google.com/apikey
+echo   2. Sign in with your Google account
+echo   3. Click "Create API key"
+echo   4. Copy the key and paste it below
 echo.
 
-findstr /C:"sk-ant" .env >nul 2>&1
+findstr /C:"AIza" .env >nul 2>&1
 IF ERRORLEVEL 1 (
-    echo Your .env file does not have a real API key yet.
+    echo Your .env file does not have a Gemini API key yet.
     echo.
-    set /p APIKEY="Paste your Anthropic API key here (or press Enter to skip): "
+    set /p APIKEY="Paste your Gemini API key here (or press Enter to skip): "
     IF NOT "!APIKEY!"=="" (
-        echo ANTHROPIC_API_KEY=!APIKEY!> .env
+        echo GEMINI_API_KEY=!APIKEY!> .env
         echo [OK] API key saved to .env
     ) ELSE (
         echo [SKIP] Edit .env manually and add your key before running.
     )
 ) ELSE (
-    echo [OK] API key already configured in .env
+    echo [OK] Gemini API key already configured in .env
 )
 
 echo.

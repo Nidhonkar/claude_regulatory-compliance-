@@ -43,9 +43,9 @@ DEMO_QUERIES = [
 
 
 def main():
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("Error: ANTHROPIC_API_KEY not set.")
+        print("Error: GEMINI_API_KEY not set. Get a free key at https://aistudio.google.com/apikey")
         sys.exit(1)
 
     agent = RegulatoryComplianceAgent(api_key=api_key)

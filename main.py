@@ -122,14 +122,16 @@ def run_interactive(agent: RegulatoryComplianceAgent):
         try:
             response = agent.query(user_input)
             print_response(response)
-        except anthropic.APIConnectionError:
-            print_error("Could not connect to Anthropic API. Check your network and API key.")
-        except anthropic.RateLimitError:
-            print_error("Rate limit reached. Please wait a moment and try again.")
-        except anthropic.AuthenticationError:
-            print_error("Invalid API key. Set ANTHROPIC_API_KEY in your .env file.")
         except Exception as e:
-            print_error(f"Unexpected error: {e}")
+            err = str(e).lower()
+            if "api_key" in err or "permission" in err or "auth" in err:
+                print_error("Invalid API key. Check GEMINI_API_KEY in your .env file.")
+            elif "quota" in err or "rate" in err:
+                print_error("Rate limit reached. Please wait a moment and try again.")
+            elif "connect" in err or "network" in err:
+                print_error("Could not connect to Google API. Check your internet connection.")
+            else:
+                print_error(f"Unexpected error: {e}")
 
         print()
 
@@ -144,14 +146,13 @@ def run_direct(agent: RegulatoryComplianceAgent, company: str, region: str, sect
     try:
         response = agent.lookup_company(company, region=region, sector=sector)
         print_response(response)
-    except anthropic.AuthenticationError:
-        print_error("Invalid API key. Set ANTHROPIC_API_KEY in your .env file.")
-        sys.exit(1)
-    except anthropic.APIConnectionError:
-        print_error("Could not connect to Anthropic API. Check your network and API key.")
-        sys.exit(1)
     except Exception as e:
-        print_error(f"Unexpected error: {e}")
+        err = str(e).lower()
+        if "api_key" in err or "permission" in err or "auth" in err:
+            print_error("Invalid API key. Check GEMINI_API_KEY in your .env file.")
+        else:
+            print_error(f"Unexpected error: {e}")
+        sys.exit(1)
         sys.exit(1)
 
 
@@ -185,10 +186,10 @@ def main():
 
     args = parser.parse_args()
 
-    api_key = args.api_key or os.environ.get("ANTHROPIC_API_KEY")
+    api_key = args.api_key or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         print_error(
-            "No API key found. Set ANTHROPIC_API_KEY in your environment or .env file, "
+            "No API key found. Set GEMINI_API_KEY in your environment or .env file, "
             "or pass --api-key."
         )
         sys.exit(1)
@@ -202,6 +203,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # Import here so the error message above can show before any import errors
-    import anthropic  # noqa: F401 — needed for exception catching in run_interactive
     main()
