@@ -3,6 +3,7 @@ Tool definitions for the regulatory compliance agent.
 """
 
 from .regulatory_data import get_regulatory_requirements, get_sector_for_company
+from .web_search import search_web, format_search_results
 
 TOOLS = [
     {
@@ -63,6 +64,34 @@ TOOLS = [
         },
     },
     {
+        "name": "web_search",
+        "description": (
+            "Search the internet for the latest regulatory news, updates, and announcements "
+            "related to a company, sector, or regulatory body in UAE or KSA. "
+            "Use this to supplement static knowledge with live information — especially for "
+            "recent regulatory changes, enforcement actions, new laws, or company-specific news."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": (
+                        "The search query. Be specific — include the company name, "
+                        "region (UAE/KSA), and topic (e.g. 'Emaar Properties RERA compliance 2024', "
+                        "'Al Rajhi Bank SAMA regulations 2024', 'UAE BFSI regulatory updates 2025')."
+                    ),
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "Number of results to return (1-10). Default is 5.",
+                    "default": 5,
+                },
+            },
+            "required": ["query"],
+        },
+    },
+    {
         "name": "compare_regulations",
         "description": (
             "Compare regulatory requirements between UAE and KSA for a specific sector. "
@@ -95,6 +124,12 @@ def execute_tool(tool_name: str, tool_input: dict) -> str:
             tool_input["sector"],
             tool_input["region"],
         )
+    elif tool_name == "web_search":
+        results = search_web(
+            tool_input["query"],
+            max_results=tool_input.get("max_results", 5),
+        )
+        return format_search_results(results)
     elif tool_name == "compare_regulations":
         return _compare_regulations(tool_input["sector"])
     else:
