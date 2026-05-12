@@ -1,10 +1,11 @@
 @echo off
+setlocal EnableDelayedExpansion
 title Regulatory Compliance Agent - Setup
 color 0A
 
 echo ============================================================
 echo   Regulatory Compliance AI Agent - Windows Setup
-echo   UAE and KSA | Real Estate and BFSI Sectors
+echo   UAE and KSA - Real Estate and BFSI Sectors
 echo ============================================================
 echo.
 
@@ -59,7 +60,7 @@ REM Prompt for API key
 echo [4/4] API Key Configuration
 echo.
 echo You need an Anthropic API key to run the agent.
-echo Get yours free at: https://console.anthropic.com
+echo Get yours at: https://console.anthropic.com
 echo.
 
 findstr /C:"sk-ant" .env >nul 2>&1
@@ -71,7 +72,7 @@ IF ERRORLEVEL 1 (
         echo ANTHROPIC_API_KEY=!APIKEY!> .env
         echo [OK] API key saved to .env
     ) ELSE (
-        echo [SKIP] You can edit .env manually and add your key before running.
+        echo [SKIP] Edit .env manually and add your key before running.
     )
 ) ELSE (
     echo [OK] API key already configured in .env
